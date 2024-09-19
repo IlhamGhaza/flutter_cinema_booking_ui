@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- permissions for Android 11 -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="flutter_cinema_booking_ui"
         android:name="${applicationName}"
