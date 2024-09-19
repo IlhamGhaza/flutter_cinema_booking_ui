@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cinema_booking_ui/pages/ticket_page.dart';
 
 import '../const.dart';
+import '../models/seats_model.dart';
 import 'account_page.dart';
 import 'discover_pages.dart';
 import 'home_pages.dart';
@@ -24,15 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
   late final List<Widget> page;
   @override
+  @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     page = [
       const HomePageCinema(),
       const DiscoverPages(),
-      NavBarPage(CupertinoIcons.ticket_fill),
+      const TicketPage(),
       AccountPage()
     ];
-    super.initState();
   }
 
   @override
