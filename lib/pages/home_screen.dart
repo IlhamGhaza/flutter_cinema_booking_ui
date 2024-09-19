@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cinema_booking_ui/const.dart';
-import 'package:flutter_cinema_booking_ui/pages/home_pages.dart';
+
+import '../const.dart';
+import 'account_page.dart';
+import 'discover_pages.dart';
+import 'home_pages.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,10 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     page = [
-      const HomePages(),
-      NavBarPage(CupertinoIcons.compass_fill),
+      const HomePageCinema(),
+      const DiscoverPages(),
       NavBarPage(CupertinoIcons.ticket_fill),
-      NavBarPage(Icons.person_rounded),
+      AccountPage()
     ];
     super.initState();
   }
@@ -52,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     AnimatedContainer(
                       duration: Duration(milliseconds: 300),
                       height: currentIndex == index ? 25 : 0,
-                      width: currentIndex == index ? 25 : 0,
+                      width: currentIndex == index ? 30 : 0,
                       decoration:
                           BoxDecoration(shape: BoxShape.circle, boxShadow: [
                         BoxShadow(

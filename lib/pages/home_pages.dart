@@ -1,15 +1,42 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_cinema_booking_ui/const.dart';
-import 'package:flutter_cinema_booking_ui/models/category_model.dart';
+import 'dart:math';
 
-class HomePages extends StatefulWidget {
-  const HomePages({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_cinema_booking_ui/pages/category_page.dart';
+import '../const.dart';
+import '../models/category_model.dart';
+import '../models/movie_model.dart';
+import 'movie_detail_page.dart';
+
+class HomePageCinema extends StatefulWidget {
+  const HomePageCinema({super.key});
 
   @override
-  State<HomePages> createState() => _HomePagesState();
+  State<HomePageCinema> createState() => _HomePageCinemaState();
 }
 
-class _HomePagesState extends State<HomePages> {
+class _HomePageCinemaState extends State<HomePageCinema> {
+  late PageController controller;
+  double pageoffSet = 1;
+  int currentIndex = 1;
+  @override
+  void initState() {
+    super.initState();
+    controller = PageController(
+      initialPage: 1,
+      viewportFraction: 0.6,
+    )..addListener(() {
+        setState(() {
+          pageoffSet = controller.page!;
+        });
+      });
+  }
+
+  void despose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,69 +44,225 @@ class _HomePagesState extends State<HomePages> {
       appBar: headerParts(),
       body: Column(
         children: [
-          const SizedBox(
-            height: 35,
-          ),
-          searchBar(),
-          const SizedBox(height: 30,),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const SizedBox(height: 35),
+          searchField(),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
               children: [
-                Text("Catogory", style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold
+                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Category",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CategoryPage(),
+                          ),
+                        );
+                      },
+                      child: const Row(
+                        children: [
+                          Text(
+                            "See All",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: buttonColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: buttonColor,
+                            size: 15,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 17),
+                categoryItems(),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    "Showing this month",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-                Spacer(),
-                Text("View All", style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold
+                const SizedBox(height: 30),
+                Expanded(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PageView.builder(
+                        controller: controller,
+                        onPageChanged: (index) {
+                          setState(() {
+                            currentIndex = index % movies.length;
+                          });
+                        },
+                        itemBuilder: (context, index) {
+                          double scale = max(
+                            0.6,
+                            (1 - (pageoffSet - index).abs() + 0.6),
+                          );
+                          double angle = (controller.position.haveDimensions
+                                  ? index.toDouble() - (controller.page ?? 0)
+                                  : index.toDouble() - 1) *
+                              5;
+                          angle = angle.clamp(-5, 5);
+                          final movie = movies[index % movies.length];
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => MovieDetailPage(
+                                    movie: movie
+                                    ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: 100 - (scale / 1.6 * 100),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+                                  Transform.rotate(
+                                    angle: angle * pi / 90,
+                                    child: Hero(
+                                      tag: movie.poster,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: Image.network(
+                                          movie.poster,
+                                          height: 300,
+                                          width: 205,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Positioned(
+                          top: 330,
+                          child: Row(
+                            children: List.generate(
+                              movies.length,
+                              (index) => AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                margin: const EdgeInsets.only(right: 15),
+                                width: currentIndex == index ? 30 : 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: currentIndex == index
+                                      ? buttonColor
+                                      : Colors.white24,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: 10,),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: buttonColor,
-                size: 15,
-              )
-            ],
+              ],
+            ),
           ),
-          ),
-          const SizedBox(height: 17,),
-          Row(
-           
-          )
-        //   Padding(
-        //     padding: EdgeInsets.symmetric(horizontal: 20),
-        //   ),
         ],
       ),
     );
   }
 
-  Padding searchBar() {
-    return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20,),
-          child: TextField(
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 17),
-              filled: true,fillColor: Colors.white.withOpacity(0.05),
-              hintText: "Search",
-              hintStyle: TextStyle(
-                color: Colors.white54,
+  Row categoryItems() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(
+        4, // Only generate 4 categories
+        (index) => Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white10.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(15),
               ),
-              prefixIcon: Icon(Icons.search,size: 35, color: Colors.white54,),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(27),
-                borderSide: BorderSide.none
+              child: Image.asset(
+                categories[index].emoji,
+                fit: BoxFit.cover,
+                height: 30,
+                width: 30,
               ),
             ),
+            const SizedBox(height: 10),
+            Text(
+              categories[index].name,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Padding searchField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 19),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.05),
+          hintText: "Search",
+          hintStyle: const TextStyle(
+            color: Colors.white54,
           ),
-          );
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 35,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(27),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
   }
 
   AppBar headerParts() {
@@ -97,45 +280,49 @@ class _HomePagesState extends State<HomePages> {
                   TextSpan(
                     children: [
                       TextSpan(
-                          text: "Welcome User",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                              letterSpacing: 1,
-                              color: Colors.white54)),
+                        text: "Welcome Angelina ",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 1,
+                          color: Colors.white54,
+                        ),
+                      ),
                       TextSpan(
-                          text: "👋",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          )),
+                        text: "👋",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text('Let\'s relax and watch the movie',
-                style: TextStyle(
-                  height: 0.6, 
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
-                ),
+                SizedBox(height: 10),
+                Text(
+                  "Let's relax and watch a movie!",
+                  style: TextStyle(
+                    height: 0.6,
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
+                  ),
                 )
               ],
             ),
             Container(
               width: 40,
-              height: 50,
+              height: 45,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 image: const DecorationImage(
-                  fit:BoxFit.cover,
-                  image: NetworkImage("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80")
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    "https://t3.ftcdn.net/jpg/06/07/84/82/240_F_607848231_w5iFN4tMmtI2woJjMh7Q8mGvgARnzHgQ.jpg",
                   ),
-              )
+                ),
+              ),
             ),
           ],
         ),
