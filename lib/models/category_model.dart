@@ -20,5 +20,7 @@ List<Category> categories = [
   Category(
     emoji: 'assets/cinema/face.png',
     name: 'Drama',
-  )
+  ),
+  Category(emoji: 'assets/cinema/police_car.png', name: 'Criminal'),
+  Category(emoji: 'assets/cinema/fire.png', name: 'Action')
 ];
