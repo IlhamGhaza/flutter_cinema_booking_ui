@@ -63,13 +63,15 @@ This project is a starting point for a Flutter application focused on creating a
 
 | Feature                | Screenshot                                      |
 |------------------------|-------------------------------------------------|
-| Signup                 | ![Signup](screenshots/signup.png)               |
-| Login                  | ![Login](screenshots/login.png)                 |
-| Movie List             | ![Movie List](screenshots/movie_list.png)       |
-| Category               | ![Category](screenshots/category.png)           |
-| Discover               | ![Discover](screenshots/discover.png)           |
-| Seat Selection         | ![Seat Selection](screenshots/seat_selection.png)|
-| Account Page           | ![Account Page](screenshots/account_page.png)   |
+| Signup                 | <img src="assets/ss/signup.png" width="200">               |
+| Login                  | <img src="assets/ss/login.png" width="200">                 |
+| Home                   | <img src="assets/ss/home.png" width="200">                   |
+| Discover               | <img src="assets/ss/discover.png" width="200">           |
+| Category               | <img src="assets/ss/category.png" width="200">           |
+| Category Movie         | <img src="assets/ss/cateMovie.png" width="200">|
+| Movie Details         | <img src="assets/ss/movieDetail.png" width="200">   |
+| Seat Selection         | <img src="assets/ss/seat.png" width="200">|
+| Account Page           | <img src="assets/ss/account.png" width="200">   |
 
 ## Contribution
 
