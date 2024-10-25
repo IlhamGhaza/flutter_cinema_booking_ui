@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_cinema_booking_ui/pages/category_movie_pages.dart';
 import 'package:flutter_cinema_booking_ui/pages/category_page.dart';
 import '../const.dart';
 import '../models/category_model.dart';
@@ -210,35 +211,46 @@ class _HomePageCinemaState extends State<HomePageCinema> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(
-        4, // Only generate 4 categories
-        (index) => Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.white10.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(15),
+        4,
+        (index) => InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => CategoryMoviesPage(categoryName: categories[index].name,),
               ),
-              child: Image.asset(
-                categories[index].emoji,
-                fit: BoxFit.cover,
-                height: 30,
-                width: 30,
+            );
+          },
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white10.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Image.asset(
+                  categories[index].emoji,
+                  fit: BoxFit.cover,
+                  height: 30,
+                  width: 30,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              categories[index].name,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-            )
-          ],
+              const SizedBox(height: 10),
+              Text(
+                categories[index].name,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
+
   
   Padding searchField() {
     return Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/models/movie_model.dart';
+import 'package:flutter_cinema_booking_ui/pages/home_screen.dart';
 import 'package:intl/intl.dart';
 import '../Widget/seat_status.dart';
 import '../const.dart';
@@ -318,7 +319,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
                               ),
                             );
                             // Navigate to Home
-                            Navigator.of(context).popUntil((route) => route.isFirst);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
                           },
                           child: Container(
                             height: 60,
